@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=ujlifjTDgK1UR5F4VTiMGBHTqpJZpMrhMuWGV5lVySUDLzjM27wjuvLRio739O7rk9Oe44bjNmniQE-WsUyYvltVUo9V-ILogK1Dn06YGK_RlfxBNnDyvmzG13jlbb6a0_vghIcJQdjcgoOS-iMCfU6E6Kb9IUkGVNEV_LP-tcb_19tY2TJZDB6Sb0ShloiDas_voVFCQb1HrZ4If2fMF5y43xNpszXrTo3OQ9cbKJ9cvxQ2TJRIOs3TYK1rMhMY3C2mFBvJrF1addciWvlz1c5t4Cp_FhAnDgZbIwcJ6fmmij0xa2DDTwaGDc-xc5cTzZAfvNMv1c5THwm7Q24vTAy8SS6Iq1FRFzSltxG9WhaIzJQ0VvI0kfcssl76a051oqKCgftGN3U6ltNbEb58CiEMUic1gASzaNyjqCPWxzjpFTVBoksi_fcMr_DmxydLsuDLXcT6i0oJHC2BDIN9a_88RN3ZCkOeM3vN9tglLwR5rVXHrauNKTf7cW1wsUR2UkOeQOUFI8XGtLbc8h9_S23vE3jB-jI5atZQsYrjObEo7NyDSn2WP530p9I8T8O3f_K1JqbyZMTpOVPUZZ4a1EKyEIKFzy4ZYGER0bGehD7mQi1MHhkNVaH5-f5l0et1mIKdBksGByChK-bJnvZnFPbAuJWnd49D139uKwtpzU09dKOwHVpGbnFlvflMSF9NpQAH6FAmMDWP9SW8Cz8pxigw2lgCIJlT-QsdgQyXM6zhVpDS8ChsQQZsnbvaqYd4lUE8kaxrTZqichiayfFqGiw0xSwVkxYmoHeZDiSB8C8" charset="UTF-8"></script><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js">
+
+    </script>
+    <script>
+
+
+    var pict = new Image();
+    pict.src = "https://www.pikpng.com/pngl/b/138-1388903_frogs-clipart-insect-cute-borders-vectors-animated-frog.png"
+    var startX = 225;
+    var startY = 415;
+    var pictWidth = 50;
+    var pictHeight = 50;
+    var carW = 75;
+    var carH =75;
+    var carArray = [];
+    var lives = 3;
+    var createImage = function(src, title, xcoord, ycoord){
+        var img = new Image();
+        img.src = src;
+        img.title = title;
+        img.left = xcoord;
+        img.top = ycoord;
+        return img;
+    }
+    function initialize(){
+        carArray.push(createImage("https://toppng.com/uploads/preview/cartoon-cars-clip-art-orange-car-115630024247ielv4rvc7.png",
+            "car1", -200, 100));
+        carArray.push(createImage("https://www.pinclipart.com/picdir/middle/42-421564_cute-car-cliparts-car-clipart-png-transparent-png.png",
+            "car2", 0, 200));
+        carArray.push(createImage("https://www.pinclipart.com/picdir/middle/519-5191350_car-clip-art-pictures-cartoon-transparent-background-car.png",
+            "car3", -400, 300));
+
+        background();
+
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(pict, startX, startY, 50, 50);
+    }
+    //jquery
+    $(document).keydown(function(event){
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        //press w to move up
+        if(keycode == 87){
+            startY = Math.max(startY-100,0);
+
+        }
+        //press a to move left
+        if(keycode == 65){
+            startX = Math.max(startX-100,0);
+
+        }
+        //press d to move right
+        if(keycode == 68){
+             startX = Math.min(startX+100,450);
+        }
+        //press s to move down
+        if(keycode == 83)
+        {
+            startY = Math.min(startY+100, 450)
+        }
+
+    });
+
+var a;
+    function startAnimation(){
+        animate();
+    }
+
+    function stopAnimation(){
+        cancelAnimationFrame(a);
+    }
+
+    function animate(){
+        background();
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+
+        ctx.drawImage(pict, startX, startY, 50, 50);
+        moveImages();
+        victory()
+        a = requestAnimationFrame(animate);
+
+    }
+    function moveImages(){
+        var ctx = document.getElementById("myCanvas").getContext("2d");
+        for(i = 0; i < carArray.length; i++){
+            carArray[i].left += 5;
+            ctx.drawImage(carArray[i], carArray[i].left, carArray[i].top, 75, 75);
+            checkCrash(carArray[i].left, carArray[i].top);
+            if(carArray[i].left > 500){
+                carArray[i].left = - 100 * i;
+
+            }
+        }
+    }
+    function checkCrash(carX, carY) {
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        if(startX +pictWidth > carX
+            && startX < carX + carW
+            && startY + pictHeight > carY
+            && startY < carH + carY){ // right A> left B and left A < right B and bottom A > top B and top A < bottom B
+            alert("Crash! You lost a life.");
+            startX = 225;
+            startY = 415;
+            lives = lives - 1;
+            stopAnimation();
+        }
+
+    }
+    function victory(){
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        if(startY <= 25){
+            setTimeout(function() {
+                alert("Winner!");
+            }, 0)
+            startX = 225;
+            startY = 415;
+            stopAnimation();
+        }
+
+    }
+
+
+
+
+
+
+function background(){
+
+    function drawRect(){
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#0B7404";
+        ctx.fillRect(0,400,500,100);
+    }
+    drawRect();
+    function drawRect1(){
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#8E948C";
+        ctx.fillRect(0,300,500,100);
+    }
+    drawRect1();
+    function drawRect2(){
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#8E948C";
+        ctx.fillRect(0,200,500,100);
+    }
+    drawRect2();
+    function drawRect3(){
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#8E948C";
+        ctx.fillRect(0,100,500,100);
+    }
+    drawRect3();
+    function drawRect4(){
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#0B7404";
+        ctx.fillRect(0,0,500,100);
+    }
+    drawRect4();
+    function drawLine(){
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        ctx.beginPath();
+        ctx.moveTo(0,200);
+        ctx.lineWidth = 3;
+        ctx.lineTo(500,200);
+        ctx.lineTo(500,30);
+        ctx.lineTo(500,400);
+        ctx.strokeStyle = "#000000";
+        ctx.stroke();
+    }
+    drawLine();
+    function drawLine1(){
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        ctx.beginPath();
+        ctx.moveTo(0,100);
+        ctx.lineWidth = 3;
+        ctx.lineTo(500,100);
+
+        ctx.strokeStyle = "#000000";
+        ctx.stroke();
+    }
+    drawLine1();
+    function drawLine2(){
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        ctx.beginPath();
+        ctx.moveTo(0,300);
+        ctx.lineWidth = 3;
+        ctx.lineTo(500,300);
+        ctx.strokeStyle = "#000000";
+        ctx.stroke();
+    }
+    drawLine2();
+    function drawLine3(){
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        ctx.beginPath();
+        ctx.moveTo(0,400);
+        ctx.lineWidth = 3;
+        ctx.lineTo(500,400);
+        ctx.strokeStyle = "#000000";
+        ctx.stroke();
+    }
+    drawLine3
+    function showLives(){
+
+    }
+}
+
+</script>
+
+    <body onload = "initialize()">
+    <canvas id="myCanvas" width="500" height="500" style="border:1px solid #000000;">
+    </canvas>
+    <button type="button" onclick="startAnimation()">Play!</button>
+    <button type="button" onclick="stopAnimation()">Stop</button>
+</body>
+</html>
